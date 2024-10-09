@@ -1,19 +1,19 @@
 <?php
 session_start();
-include 'db_connect.php'; // Include database connection
+include 'db_connect.php'; 
 
-// Enable error reporting for debugging
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Check if the user is logged in
+
 if (!isset($_SESSION['username'])) {
     header('Location: landingpage.php');
     exit();
 }
 
-// Fetch total materials, low stock, and expiring soon counts
+
 $total_materials_query = "SELECT COUNT(*) as total FROM materials";
 $total_materials_result = mysqli_query($conn, $total_materials_query);
 $total_materials = mysqli_fetch_assoc($total_materials_result)['total'];
@@ -26,11 +26,11 @@ $expiring_soon_query = "SELECT COUNT(*) as expiring_soon FROM materials WHERE ex
 $expiring_soon_result = mysqli_query($conn, $expiring_soon_query);
 $expiring_soon = mysqli_fetch_assoc($expiring_soon_result)['expiring_soon'];
 
-// Initialize filters
+
 $category_filter = isset($_GET['category']) ? $_GET['category'] : '';
 $search_term = isset($_GET['search']) ? $_GET['search'] : '';
 
-// Base query for materials
+
 $query = "
     SELECT m.*, COALESCE(MIN(b.delivery_date), m.delivery_date) AS next_delivery_date, MAX(b.expiration_date) AS max_expiration_date
     FROM materials m
@@ -39,14 +39,14 @@ $query = "
 $params = [];
 $types = '';
 
-// Category filter
+
 if ($category_filter) {
     $query .= " AND m.category = ?";
     $params[] = $category_filter;
     $types .= 's';
 }
 
-// Search filter
+
 if ($search_term) {
     $query .= " AND m.material_name LIKE ?";
     $params[] = '%' . $search_term . '%';
@@ -55,25 +55,25 @@ if ($search_term) {
 
 $query .= " GROUP BY m.material_id";
 
-// Prepare the statement
+
 $stmt = mysqli_prepare($conn, $query);
 if ($stmt === false) {
     die('Prepare failed: ' . mysqli_error($conn));
 }
 
-// Bind parameters if present
+
 if (!empty($params)) {
     mysqli_stmt_bind_param($stmt, $types, ...$params);
 }
 
-// Execute the prepared statement
+
 if (!mysqli_stmt_execute($stmt)) {
     die('Execute failed: ' . mysqli_stmt_error($stmt));
 }
 
 $result = mysqli_stmt_get_result($stmt);
 
-// Fetch unique categories from the database for filter
+
 $category_query = "SELECT DISTINCT category FROM materials";
 $category_result = mysqli_query($conn, $category_query);
 $categories = [];
@@ -83,7 +83,7 @@ if ($category_result) {
     }
 }
 
-// Fetch Action Logs
+
 $log_query = "
     SELECT ml.action_type, m.material_name, ml.quantity, ml.user, ml.action_date, ml.batch_expiration_date, ml.location
     FROM material_log ml
@@ -122,9 +122,9 @@ if (!$log_result) {
         .dashboard-subtitle { font-size: 1.2rem; }
         .card { background-color: #ffffff; }
         .icon { font-size: 40px; margin-bottom: 10px; color: black; }
-        .summary-card { background-color: #007bff; } /* Slightly darker blue */
-        .low-stock { background-color: #dc3545; } /* Slightly darker red */
-        .expiring-soon { background-color: #ffc107; } /* Slightly darker yellow */
+        .summary-card { background-color: #007bff; } 
+        .low-stock { background-color: #dc3545; }
+        .expiring-soon { background-color: #ffc107; } 
     </style>
 </head>
 <body>
@@ -166,7 +166,7 @@ if (!$log_result) {
             </div>
         </div>
 
-        <!-- Category Filter and Search -->
+        
         <form method="GET" class="mb-4">
             <div class="input-group mb-3">
                 <select name="category" class="form-select">
@@ -182,7 +182,7 @@ if (!$log_result) {
             </div>
         </form>
 
-        <!-- Materials Inventory Display -->
+        
         <div class="row">
             <?php
             if ($result && mysqli_num_rows($result) > 0) {
@@ -206,7 +206,7 @@ if (!$log_result) {
                             </div>
                           </div>";
 
-                     // Remove Stock Modal for this specific material
+                     
                     echo "<div class='modal fade' id='removeStockModal{$row['material_id']}' tabindex='-1' role='dialog'>
                             <div class='modal-dialog' role='document'>
                                 <div class='modal-content'>
@@ -241,7 +241,7 @@ if (!$log_result) {
             ?>
         </div>
 
-        <!-- Action Logs -->
+        
         <h4 class="mb-4">Action Logs</h4>
         <table class="table table-striped">
             <thead>
