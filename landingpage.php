@@ -1,26 +1,22 @@
 <?php
-// Start session at the beginning of the script
 session_start();
 include_once("dbconnect.php");
 
-// Handle login logic before any HTML is rendered
+
 if (isset($_POST['login'])) {
     $username = $_POST['user'];
     $password = $_POST['password'];
 
-    // Query to check the username and password
+    
     $query = "SELECT * FROM user_account WHERE Username = '$username' AND Password = '$password'";
     $result = mysqli_query($conn, $query);
 
-    // If credentials are correct
+    
     if (mysqli_num_rows($result) > 0) {
-        // Set session variables to store user login
         $_SESSION['username'] = $username;
         echo "<script>window.alert('Login successful!');</script>";
-
-        // Redirect to the dashboard
         header('Location: dashboard.php');
-        exit(); // Ensure no further code runs after the redirect
+        exit(); 
     } else {
         echo "<script>window.alert('Login failed. Please check your credentials.');</script>";
     }
@@ -52,7 +48,7 @@ if (isset($_POST['login'])) {
             position: relative;
         }
 
-        /* Dark overlay for better contrast */
+    
         body::before {
             content: "";
             position: absolute;
@@ -71,10 +67,10 @@ if (isset($_POST['login'])) {
             margin-bottom: 15px;
             z-index: 1;
             position: relative;
-            margin-top: 38px; /* Add a margin-top of 1cm (approx 38px) */
+            margin-top: 38px;
         }
 
-        /* Neon effect for title */
+        
         .title-container h1 {
     		font-size: 4em;
     		color: #ffdb58;
@@ -83,7 +79,7 @@ if (isset($_POST['login'])) {
    			letter-spacing: 2px;
     		text-shadow: 0 0 10px rgba(255, 219, 88, 0.7), 0 0 20px rgba(255, 219, 88, 0.6);
    			animation: neon 1.5s ease-in-out infinite alternate;
-    		margin-bottom: -25px; /* Reset any default margin-bottom */
+    		margin-bottom: -25px;
 }
 
         @keyframes neon {
@@ -102,7 +98,7 @@ if (isset($_POST['login'])) {
     		padding-bottom: 250px;
     		font-style: italic;
     		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-    		margin-top: 1px; /* Fine-tune the space between the title and paragraph */
+    		margin-top: 1px;
     		text-align: left;
 }
 
@@ -132,7 +128,7 @@ if (isset($_POST['login'])) {
             text-align: left;
         }
 
-        /* Rounded input fields with icons */
+        
         .input-container {
             position: relative;
             width: 100%;
@@ -164,7 +160,7 @@ if (isset($_POST['login'])) {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        /* Gradient button with hover effect */
+        
         input[type="submit"] {
             background: linear-gradient(90deg, #ffdb58, #ffc107);
             color: #333;
